@@ -2,45 +2,230 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Slot Game V3</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Casino</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
-body{margin:0;background:#0b0b0b;color:#fff;font-family:Arial}
-#app{max-width:1200px;margin:auto;padding:10px}
-.top{display:flex;gap:10px;justify-content:space-between;background:#151515;padding:12px;border:2px solid gold;border-radius:12px}
-.card{padding:4px 10px}
-#slot{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px;background:#111;padding:12px;border-radius:12px}
-.reel{display:flex;flex-direction:column;gap:8px}
-.sym{height:100px;background:#222;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:52px}
-.controls{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
-button{padding:10px 16px;font-weight:bold}
-.win{animation:f .4s infinite}
-@keyframes f{50%{background:gold;color:black}}
-#msg{text-align:center;color:gold;font-size:24px;height:30px;margin-top:8px}
-#stats{margin-top:10px;background:#151515;padding:10px;border-radius:10px}
-canvas{position:fixed;left:0;top:0;pointer-events:none}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:     #FDF5EC;
+  --panel:  #FFFFFF;
+  --pink:   #FF9AC1;
+  --plum:   #5C4F72;
+  --muted:  #A896C0;
+  --border: #EAE0FF;
+}
+
+body {
+  background: var(--bg);
+  color: var(--plum);
+  font-family: 'Nunito', sans-serif;
+  min-height: 100vh;
+  padding: 16px;
+}
+
+#app {
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Stats bar (한 줄 고정, 넘치면 가로 스크롤) ── */
+.top {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  gap: 6px;
+  padding: 12px 14px;
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 3px 12px rgba(180,160,220,0.12);
+}
+.top::-webkit-scrollbar { display: none; }
+
+.card {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 0 6px;
+}
+
+.clabel {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+}
+
+.cval {
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--plum);
+  white-space: nowrap;
+}
+
+/* ── Message ── */
+#msg {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--pink);
+  height: 26px;
+  letter-spacing: 2px;
+}
+
+/* ── Slot grid ── */
+#slot {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 7px;
+  background: var(--panel);
+  padding: 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  box-shadow: 0 3px 12px rgba(180,160,220,0.12);
+}
+
+.reel {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.sym {
+  height: 76px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+}
+
+.win { animation: wf 0.4s infinite; }
+@keyframes wf {
+  50% {
+    background: #FFD6E7;
+    border-color: var(--pink);
+    box-shadow: 0 0 14px rgba(255,154,193,0.45);
+    transform: scale(1.06);
+  }
+}
+
+/* ── Controls ── */
+.controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+button {
+  padding: 11px 18px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  border: 1.5px solid var(--border);
+  border-radius: 50px;
+  background: var(--panel);
+  color: var(--plum);
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(180,160,220,0.12);
+  transition: transform .08s;
+  -webkit-appearance: none;
+  appearance: none;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:active { transform: scale(0.92); }
+
+#spinBtn {
+  background: var(--pink);
+  color: #fff;
+  border-color: var(--pink);
+  box-shadow: 0 4px 14px rgba(255,154,193,0.4);
+  font-size: 15px;
+  padding: 13px 30px;
+}
+
+/* ── Stats footer ── */
+#stats {
+  background: var(--panel);
+  border: 1.5px solid var(--border);
+  border-radius: 16px;
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(180,160,220,0.1);
+}
+
+/* ── Home button ── */
+.btn-home {
+  display: block;
+  padding: 13px;
+  background: var(--pink);
+  border: none;
+  border-radius: 50px;
+  color: #fff;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(255,154,193,0.35);
+  transition: transform .15s, box-shadow .15s;
+}
+.btn-home:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255,154,193,0.5);
+}
+
+canvas { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 100; }
 </style>
 </head>
 <body>
 <canvas id="fx"></canvas>
 <div id="app">
-<div class="top">
-<div class="card">잔액 <span id="bal">10000</span></div>
-<div class="card">베팅 <span id="bet">50</span></div>
-<div class="card">당첨 <span id="win">0</span></div>
-<div class="card">무료스핀 <span id="free">0</span></div>
-<div class="card">잭팟 <span id="jack">5000</span></div>
-</div>
-<div id="msg"></div>
-<div id="slot"></div>
-<div class="controls">
-<button onclick="spin()">SPIN</button>
-<button onclick="autoSpin()">AUTO</button>
-<button onclick="betUp()">BET+</button>
-<button onclick="betDown()">BET-</button>
-<button onclick="toggleSound()">SOUND</button>
-</div>
-<div id="stats"></div>
+
+  <div class="top">
+    <div class="card"><span class="clabel">💰 잔액</span><span class="cval" id="bal">10000</span></div>
+    <div class="card"><span class="clabel">🎯 베팅</span><span class="cval" id="bet">50</span></div>
+    <div class="card"><span class="clabel">✨ 당첨</span><span class="cval" id="win">0</span></div>
+    <div class="card"><span class="clabel">🎁 무료</span><span class="cval" id="free">0</span></div>
+    <div class="card"><span class="clabel">💎 잭팟</span><span class="cval" id="jack">5000</span></div>
+  </div>
+
+  <div id="msg"></div>
+  <div id="slot"></div>
+
+  <div class="controls">
+    <button id="spinBtn" onclick="spin()">🎰 SPIN</button>
+    <button onclick="autoSpin()">AUTO</button>
+    <button onclick="betUp()">BET +</button>
+    <button onclick="betDown()">BET −</button>
+    <button id="soundBtn" onclick="toggleSound()">🔊</button>
+  </div>
+
+  <div id="stats"></div>
+  <a href="index.html" class="btn-home">⬅ 게임 목록</a>
+
 </div>
 <script>
 const symbols=["🍒","🍋","🍊","🔔","7️⃣","💎","⭐","🎰"];
@@ -56,9 +241,9 @@ for(let i=0;i<5;i++){
 
 function rnd(){return symbols[Math.floor(Math.random()*symbols.length)]}
 function update(){
- bal.textContent=balance; betEl.textContent=bet;
- win.textContent=lastWin; freeEl.textContent=free; jack.textContent=jackpot;
- statsDiv.innerHTML=`총스핀:${stats.spins} | 총승리:${stats.wins} | 최고당첨:${stats.biggest}`;
+ bal.textContent=balance.toLocaleString(); betEl.textContent=bet;
+ win.textContent=lastWin; freeEl.textContent=free; jack.textContent=jackpot.toLocaleString();
+ statsDiv.innerHTML=`총스핀: ${stats.spins} &nbsp;|&nbsp; 총승리: ${stats.wins} &nbsp;|&nbsp; 최고당첨: ${stats.biggest.toLocaleString()}`;
  localStorage.slotv3=JSON.stringify({balance,bet,stats,jackpot});
 }
 const bal=document.getElementById("bal"),betEl=document.getElementById("bet"),
@@ -115,11 +300,11 @@ function evaluate(g){
  }
 
  let scat=g.flat().filter(v=>v==="🎰").length;
- if(scat>=3){free+=10;msg.textContent="FREE SPIN +10";}
+ if(scat>=3){free+=10;msg.textContent="FREE SPIN +10 🎁";}
 
  if(Math.random()<0.01){
    w+=jackpot;
-   msg.textContent="JACKPOT!";
+   msg.textContent="💎 JACKPOT! 💎";
    jackpot=5000;
    burst(300);
  }
@@ -143,12 +328,14 @@ function betDown(){bet=Math.max(10,bet-10);update();}
 
 function toggleSound(){
  sound=!sound;
- if(sound)beep(500); 
+ document.getElementById('soundBtn').textContent=sound?'🔊':'🔇';
+ if(sound)beep(500);
 }
 
 const ac=new (window.AudioContext||window.webkitAudioContext)();
 function beep(freq){
  if(!sound)return;
+ if(ac.state==='suspended')ac.resume();
  let o=ac.createOscillator(),g=ac.createGain();
  o.frequency.value=freq;o.connect(g);g.connect(ac.destination);
  o.start();g.gain.exponentialRampToValueAtTime(0.0001,ac.currentTime+0.15);
