@@ -363,6 +363,60 @@
 
     .tip-box strong { color: var(--ember); }
 
+    /* ── PORTFOLIO LINK ── */
+    .portfolio-link-section {
+      max-width: 960px;
+      margin: 0 auto 0;
+      padding: 0 20px 40px;
+    }
+
+    .portfolio-link-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      background: var(--ash);
+      border: 1px solid var(--smoke);
+      border-left: 3px solid var(--gold);
+      border-radius: 12px;
+      padding: 20px 24px;
+      text-decoration: none;
+      transition: border-left-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    }
+
+    .portfolio-link-card:hover {
+      border-left-color: var(--ember);
+      box-shadow: 0 8px 28px rgba(0,0,0,0.4), 0 0 20px var(--glow);
+      transform: translateY(-2px);
+    }
+
+    .portfolio-link-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .portfolio-link-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--cream);
+    }
+
+    .portfolio-link-arrow {
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .portfolio-link-card:hover .portfolio-link-arrow {
+      color: var(--ember);
+      transform: translateX(4px);
+    }
+
     /* ── FOOTER ── */
     footer {
       text-align: center;
@@ -761,6 +815,18 @@
   </section>
 
 </main>
+
+<div class="portfolio-link-section">
+  <a class="portfolio-link-card" href="portfolio.html">
+    <div>
+      <p class="portfolio-link-label">관련 자료</p>
+      <p class="portfolio-link-title">JYJ Portfolio — 2026년 6월 포트폴리오 차트 보기</p>
+    </div>
+    <svg class="portfolio-link-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 10h12M10 4l6 6-6 6"/>
+    </svg>
+  </a>
+</div>
 
 <footer>
   양재역 회식 장소 추천 보고서 · 2026년 6월 14일 · 식당명 클릭 시 네이버 지도로 연결됩니다
