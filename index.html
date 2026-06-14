@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>양재역 회식 장소 추천</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Noto+Serif+KR:wght@600;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --coal:   #191411;
+      --ash:    #231F1B;
+      --cinder: #2D2822;
+      --smoke:  #4A433C;
+      --cream:  #EFE3D3;
+      --muted:  #8A7D74;
+      --ember:  #E47229;
+      --gold:   #C79440;
+      --glow:   rgba(228, 114, 41, 0.14);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+      background: var(--coal);
+      color: var(--cream);
+      line-height: 1.75;
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--ember);
+      outline-offset: 3px;
+      border-radius: 3px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: relative;
+      padding: 72px 24px 60px;
+      text-align: center;
+      background: var(--coal);
+      overflow: hidden;
+    }
+
+    /* Smoke layers — the signature element */
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 100%, rgba(228, 114, 41, 0.20) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 40% at 30% 110%, rgba(199, 148, 64, 0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 70% 110%, rgba(199, 148, 64, 0.10) 0%, transparent 60%);
+      animation: smokeRise 9s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    header::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 55% 105%, rgba(228, 90, 20, 0.10) 0%, transparent 55%);
+      animation: smokeRise 14s ease-in-out infinite alternate-reverse;
+      pointer-events: none;
+    }
+
+    @keyframes smokeRise {
+      0%   { transform: translateY(0) scaleX(1);    opacity: 0.7; }
+      100% { transform: translateY(-30px) scaleX(1.08); opacity: 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      header::before, header::after { animation: none; }
+    }
+
+    .header-eyebrow {
+      position: relative;
+      z-index: 1;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--ember);
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    header h1 {
+      position: relative;
+      z-index: 1;
+      font-family: 'Noto Serif KR', serif;
+      font-size: clamp(1.75rem, 5vw, 2.8rem);
+      font-weight: 900;
+      color: var(--cream);
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+    }
+
+    .header-sub {
+      position: relative;
+      z-index: 1;
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .header-glow-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--ember) 50%, transparent);
+      opacity: 0.5;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--ash);
+      border-bottom: 1px solid var(--smoke);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    nav::-webkit-scrollbar { display: none; }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 4px;
+      padding: 10px 16px;
+      min-width: max-content;
+    }
+
+    nav ul li a {
+      display: block;
+      padding: 7px 15px;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+      border-radius: 100px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    nav ul li a:hover {
+      background: var(--glow);
+      color: var(--ember);
+    }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 960px;
+      margin: 44px auto;
+      padding: 0 20px;
+    }
+
+    section { margin-bottom: 60px; }
+
+    .section-title {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: var(--cream);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-title::before {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 1.3em;
+      background: var(--ember);
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--ash);
+      border-radius: 12px;
+      border: 1px solid var(--smoke);
+      border-left: 3px solid var(--smoke);
+      padding: 24px 28px;
+      margin-bottom: 14px;
+      transition: border-left-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    }
+
+    .card:hover {
+      border-left-color: var(--ember);
+      box-shadow: 0 10px 36px rgba(0, 0, 0, 0.5), 0 0 28px var(--glow);
+      transform: translateY(-2px);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .card-icon { font-size: 1.4rem; flex-shrink: 0; }
+
+    .restaurant-link {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--cream);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .restaurant-link:hover { color: var(--ember); }
+
+    .naver-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: transparent;
+      color: var(--ember);
+      border: 1px solid rgba(228, 114, 41, 0.5);
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 4px;
+      margin-left: 8px;
+      vertical-align: middle;
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .naver-badge:hover {
+      background: var(--ember);
+      color: var(--coal);
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 6px 20px;
+      font-size: 0.84rem;
+      margin-bottom: 14px;
+    }
+
+    .info-item { display: flex; gap: 8px; align-items: baseline; }
+    .info-label { color: var(--muted); white-space: nowrap; font-size: 0.76rem; }
+    .info-value { color: var(--cream); font-weight: 500; }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .tag {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--smoke);
+      border-radius: 4px;
+      font-size: 0.74rem;
+      padding: 2px 10px;
+      font-weight: 500;
+    }
+
+    .tag.highlight {
+      background: rgba(228, 114, 41, 0.12);
+      color: var(--ember);
+      border-color: rgba(228, 114, 41, 0.35);
+    }
+
+    .reason {
+      font-size: 0.84rem;
+      color: var(--muted);
+      line-height: 1.75;
+      padding-top: 14px;
+      border-top: 1px solid var(--smoke);
+    }
+
+    /* ── GUIDE TABLE ── */
+    .guide-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      background: var(--ash);
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--smoke);
+    }
+
+    .guide-table th {
+      background: var(--cinder);
+      color: var(--ember);
+      padding: 13px 18px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 0.76rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .guide-table td {
+      padding: 12px 18px;
+      border-bottom: 1px solid var(--smoke);
+      vertical-align: top;
+      color: var(--cream);
+    }
+
+    .guide-table tr:last-child td { border-bottom: none; }
+
+    .guide-table tbody tr:hover td {
+      background: var(--cinder);
+    }
+
+    .situation {
+      font-weight: 700;
+      color: var(--gold);
+      white-space: nowrap;
+    }
+
+    /* ── LOCATION CARDS ── */
+    .location-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 14px;
+    }
+
+    .location-card {
+      background: var(--ash);
+      border: 1px solid var(--smoke);
+      border-radius: 12px;
+      padding: 20px 22px;
+      transition: border-color 0.2s;
+    }
+
+    .location-card:hover { border-color: var(--gold); }
+
+    .location-card h4 {
+      font-family: 'Noto Serif KR', serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .location-card p { font-size: 0.84rem; color: var(--muted); }
+
+    .tip-box {
+      background: rgba(228, 114, 41, 0.07);
+      border: 1px solid rgba(228, 114, 41, 0.28);
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-size: 0.84rem;
+      color: var(--cream);
+      margin-top: 20px;
+      line-height: 1.75;
+    }
+
+    .tip-box strong { color: var(--ember); }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 32px 16px;
+      font-size: 0.76rem;
+      color: var(--smoke);
+      border-top: 1px solid var(--smoke);
+      margin-top: 16px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      header { padding: 52px 20px 44px; }
+      header h1 { font-size: 1.55rem; }
+      .card { padding: 18px 16px; }
+      .info-grid { grid-template-columns: 1fr; }
+      .location-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <p class="header-eyebrow">서울 서초구 · 양재역 도보 10분 이내</p>
+  <h1>양재역 근처<br>회식 장소 추천</h1>
+  <p class="header-sub">2026년 6월 14일 기준 · 총 12곳 · 식당명 클릭 시 네이버 지도 연결</p>
+</header>
+
+<div class="header-glow-line"></div>
+
+<nav>
+  <ul>
+    <li><a href="#grillSection">🥩 고기·구이</a></li>
+    <li><a href="#koreanSection">🍲 한식·보양식</a></li>
+    <li><a href="#chineseSection">🥢 중식·기타</a></li>
+    <li><a href="#drinkSection">🍶 분위기·주류</a></li>
+    <li><a href="#afterSection">☕ 2차 장소</a></li>
+    <li><a href="#guideSection">📋 선택 가이드</a></li>
+    <li><a href="#locationSection">📍 위치 안내</a></li>
+  </ul>
+</nav>
+
+<main>
+
+  <!-- 1. 고기·구이 -->
+  <section id="grillSection">
+    <h2 class="section-title">고기·구이 전문점</h2>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🥩</span>
+        <div>
+          <a class="restaurant-link" href="https://map.naver.com/v5/search/왕삼돈 양재역" target="_blank" rel="noopener">왕삼돈</a>
+          <a class="naver-badge" href="https://map.naver.com/v5/search/왕삼돈 양재역" target="_blank" rel="noopener">네이버지도</a>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item"><span class="info-label">위치</span><span class="info-value">양재역 1번 출구 오른쪽 도보 5분</span></div>
+        <div class="info-item"><span class="info-label">대표 메뉴</span><span class="info-value">목살, 삼겹살</span></div>
+        <div class="info-item"><span class="info-label">가격대</span><span class="info-value">1인 15,000~25,000원</span></div>
+        <div class="info-item"><span class="info-label">예약</span><span class="info-value">전화 예약 권장</span></div>
+      </div>
+      <div class="tag-list">
+        <span class="tag highlight">룸 보유</span>
+        <span class="tag">단체 회식 가능</span>
+        <span class="tag">파절임 사이드 유명</span>
+      </div>
+      <div class="reason">넓은 내부 공간과 룸석을 보유하고 있어 편안한 회식 분위기 연출 가능. 인근 직장인들 사이에서 검증된 단골 고기집.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🥩</span>
+        <div>
+          <a class="restaurant-link" href="https://map.naver.com/v5/search/육즙관리소 양재역" target="_blank" rel="noopener">육즙관리소</a>
+          <a class="naver-badge" href="https://map.naver.com/v5/search/육즙관리소 양재역" target="_blank" rel="noopener">네이버지도</a>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item"><span class="info-label">대표 메뉴</span><span class="info-value">삼겹살, 항정살</span></div>
+        <div class="info-item"><span class="info-label">가격대</span><span class="info-value">중간</span></div>
+        <div class="info-item"><span class="info-label">예약</span><span class="info-value">전화 예약 권장</span></div>
+      </div>
+      <div class="tag-list">
+        <span class="tag">고기 품질 관리 철저</span>
+        <span class="tag">단체석 운영</span>
+      </div>
+      <div class="reason">이름처럼 고기 육즙과 품질에 신경 쓴 곳으로 고기 좋아하는 팀 회식에 적합.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🥩</span>
+        <div>
+          <a class="restaurant-link" href="https://map.naver.com/v5/search/잰부닥 양재역" target="_blank" rel="noopener">잰부닥</a>
+          <a class="naver-badge" href="https://map.naver.com/v5/search/잰부닥 양재역" target="_blank" rel="noopener">네이버지도</a>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item"><span class="info-label">대표 메뉴</span><span class="info-value">통삼겹살</span></div>
+        <div class="info-item"><span class="info-label">가격대</span><span class="info-value">중간</span></div>
+      </div>
+      <div class="tag-list">
+        <span class="tag">통삼겹살 전문</span>
+        <span class="tag">특색 있는 메뉴</span>
+        <span class="tag highlight">가성비 우수</span>
+      </div>
+      <div class="reason">일반 삼겹살과 차별화된 통삼겹살을 즐길 수 있어 회식 자리에서 색다른 경험 제공.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🥩</span>
+        <div>
+          <a class="restaurant-link" href="https://map.naver.com/v5/search/마장동 정육식당 양재" target="_blank" rel="noopener">마장동 정육식당 (양재점)</a>
+          <a class="naver-badge" href="https://map.naver.com/v5/search/마장동 정육식당 양재" target="_blank" rel="noopener">네이버지도</a>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item"><span class="info-label">대표 메뉴</span><span class="info-value">소등심, 갈비살</span></div>
+        <div class="info-item"><span class="info-label">가격대</span><span class="info-value">중상 (1인 18,000원~)</span></div>
+      </div>
+      <div class="tag-list">
+        <span class="tag">소고기 전문</span>
+        <span class="tag highlight">정육점 직영</span>
+        <span class="tag">격식 있는 회식</span>
+      </div>
+      <div class="reason">정육점 직영으로 신선하고 합리적인 가격의 소고기를 즐길 수 있어 격식 있는 회식에 적합.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🐑</span>
+        <div>
+          <a class="restaurant-link" href="https://map.naver.com/v5/search/양인환대 양재역" target="_blank" rel="noopener">양인환대</a>
+          <a class="naver-badge" href="https://map.naver.com/v5/search/양인환대 양재역" target="_blank" rel="noopener">네이버지도</a>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item"><span class="info-label">대표 메뉴</span><span class="info-value">양갈비, 양전골</span></div>
+        <div class="info-item"><span class="info-label">가격대</span><span class="info-value">중상</span></div>
+        <div class="info-item"><span class="info-label">예약</span><span class="info-value">사전 예약 필수</span></div>
+      </div>
+      <div class="tag-list">
+        <span class="tag highlight">개별 룸 보유</span>
+        <span class="tag">이색 양고기 전문</span>
+        <span class="tag">프라이빗 회식</span>
+      </div>
+      <div class="reason">개별 룸이 있어 프라이빗한 회식 가능. 양고기라는 특색 있는 메뉴로 특별한 회식 자리 연출.</div>
+    </div>
+  </section>
+
+  <!-- 2. 한식·보양식 -->
+  <section id="koreanSection">
+    <h2 class="section-title">한식·보양식 전문점</h2>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🦆</span>
+        <div>
+          <a class="restaurant-link" href="https://map.naver.com/v5/search/배나무골 오리집 양재" target="_blank" rel="noopener">배나무골 오리집</a>
+          <a class="naver-badge" href="https://map.naver.com/v5/search/배나무골 오리집 양재" target="_blank" rel="noopener">네이버지도</a>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item"><span class="info-label">위치</span><span class="info-value">양재 aT센터 근처</span></div>
+        <div class="info-item"><span class="info-label">대표 메뉴</span><span class="info-value">오리 훈제, 오리 주물럭</span></div>
+        <div class="info-item"><span class="info-label">가격대</span><span class="info-value">중간</span></div>
+      </div>
+      <div class="tag-list">
+        <span class="tag">보양식 회식</span>
+        <span class="tag">넉넉한 좌석</span>
+      </div>
+      <div class="reason">체력 보충이 필요한 팀에게 오리 요리는 건강한 회식 선택지. 넉넉한 식사량으로 만족도 높음.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🐟</span>
+        <div>
+          <a class="restaurant-link" href="https://map.naver.com/v5/search/장수촌 풍천장어 양재" target="_blank" rel="noopener">장수촌 풍천장어</a>
+          <a class="naver-badge" href="https://map.naver.com/v5/search/장수촌 풍천장어 양재" target="_blank" rel="noopener">네이버지도</a>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item"><span class="info-label">대표 메뉴</span><span class="info-value">풍천장어 구이, 장어탕</span></div>
+        <div class="info-item"><span class="info-label">가격대</span><span class="info-value">중상~고가</span></div>
+        <div class="info-item"><span class="info-label">예약</span><span class="info-value">단체 사전 예약 필수</span></div>
+      </div>
+      <div class="tag-list">
+        <span class="tag highlight">직원 구이 서비스</span>
+        <span class="tag">대형 좌석 보유</span>
+        <span class="tag">대인원 가능</span>
+      </div>
+      <div class="reason">직원이 직접 구워주는 서비스로 회식 자리에서 편안하게 이야기에 집중 가능. 단체 수용력 우수.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🍲</span>
+        <div>
+          <a class="restaurant-link" href="https://map.naver.com/v5/search/국고집 양재역" target="_blank" rel="noopener">국고집</a>
+          <a class="naver-badge" href="https://map.naver.com/v5/search/국고집 양재역" target="_blank" rel="noopener">네이버지도</a>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item"><span class="info-label">대표 메뉴</span><span class="info-value">한식 정식, 찌개류</span></div>
+        <div class="info-item"><span class="info-label">가격대</span><span class="info-value">중간</span></div>
+      </div>
+      <div class="tag-list">
+        <span class="tag">단체석 완비</span>
+        <span class="tag highlight">주차 지원</span>
+        <span class="tag">가성비 우수</span>
+      </div>
+      <div class="reason">주차 지원 서비스가 있어 차량 이동 팀에게 편리. 가성비 좋은 한식 회식 장소.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🐷</span>
+        <div>
+          <a class="restaurant-link" href="https://map.naver.com/v5/search/탐라도야지 양재역" target="_blank" rel="noopener">탐라도야지</a>
+          <a class="naver-badge" href="https://map.naver.com/v5/search/탐라도야지 양재역" target="_blank" rel="noopener">네이버지도</a>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item"><span class="info-label">대표 메뉴</span><span class="info-value">제주 흑돼지</span></div>
+        <div class="info-item"><span class="info-label">가격대</span><span class="info-value">중상</span></div>
+      </div>
+      <div class="tag-list">
+        <span class="tag">제주 흑돼지 전문</span>
+        <span class="tag">격식 있는 회식</span>
+      </div>
+      <div class="reason">일반 삼겹살보다 질 좋은 제주 흑돼지를 즐길 수 있어 중요한 회식 자리에 어울림.</div>
+    </div>
+  </section>
+
+  <!-- 3. 중식·기타 -->
+  <section id="chineseSection">
+    <h2 class="section-title">중식·기타 전문점</h2>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🥢</span>
+        <div>
+          <a class="restaurant-link" href="https://map.naver.com/v5/search/명정루 양재역" target="_blank" rel="noopener">명정루</a>
+          <a class="naver-badge" href="https://map.naver.com/v5/search/명정루 양재역" target="_blank" rel="noopener">네이버지도</a>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item"><span class="info-label">대표 메뉴</span><span class="info-value">탕수육, 짜장, 해산물</span></div>
+        <div class="info-item"><span class="info-label">가격대</span><span class="info-value">중간~중상</span></div>
+        <div class="info-item"><span class="info-label">예약</span><span class="info-value">전화 예약 권장</span></div>
+      </div>
+      <div class="tag-list">
+        <span class="tag highlight">룸 보유</span>
+        <span class="tag highlight">주차 편리</span>
+        <span class="tag">중화요리 전문</span>
+      </div>
+      <div class="reason">룸이 있는 중식당으로 다양한 메뉴 선택지 덕분에 입맛이 다양한 팀 회식에 최적. 주차 편리.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🍜</span>
+        <div>
+          <a class="restaurant-link" href="https://map.naver.com/v5/search/오향절면 양재역" target="_blank" rel="noopener">오향절면</a>
+          <a class="naver-badge" href="https://map.naver.com/v5/search/오향절면 양재역" target="_blank" rel="noopener">네이버지도</a>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item"><span class="info-label">대표 메뉴</span><span class="info-value">중화 면요리</span></div>
+        <div class="info-item"><span class="info-label">가격대</span><span class="info-value">저~중간</span></div>
+      </div>
+      <div class="tag-list">
+        <span class="tag highlight">가성비 최고</span>
+        <span class="tag">직장인 단골</span>
+        <span class="tag">소규모 회식 적합</span>
+      </div>
+      <div class="reason">양재역 인근 직장인들이 즐겨 찾는 가성비 좋은 중식 면 전문점. 부담 없는 소규모 회식에 적합.</div>
+    </div>
+  </section>
+
+  <!-- 4. 분위기·주류 -->
+  <section id="drinkSection">
+    <h2 class="section-title">분위기 좋은 주류 포함 식당</h2>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">🍶</span>
+        <div>
+          <a class="restaurant-link" href="https://map.naver.com/v5/search/느린마을 양조장 양재" target="_blank" rel="noopener">느린마을 양조장</a>
+          <a class="naver-badge" href="https://map.naver.com/v5/search/느린마을 양조장 양재" target="_blank" rel="noopener">네이버지도</a>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item"><span class="info-label">위치</span><span class="info-value">양재 aT센터 인근</span></div>
+        <div class="info-item"><span class="info-label">대표 메뉴</span><span class="info-value">수제 막걸리, 전통주 안주</span></div>
+        <div class="info-item"><span class="info-label">가격대</span><span class="info-value">중간</span></div>
+      </div>
+      <div class="tag-list">
+        <span class="tag">전통주 전문</span>
+        <span class="tag">독특한 분위기</span>
+        <span class="tag highlight">1·2차 겸용 가능</span>
+      </div>
+      <div class="reason">막걸리와 전통주를 즐기며 편안한 분위기의 회식 가능. 2차를 겸한 1차 자리로도 좋음.</div>
+    </div>
+  </section>
+
+  <!-- 5. 2차 -->
+  <section id="afterSection">
+    <h2 class="section-title">2차 장소 추천</h2>
+
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">☕</span>
+        <div>
+          <a class="restaurant-link" href="https://map.naver.com/v5/search/테라로사 양재역" target="_blank" rel="noopener">테라로사 (양재역점)</a>
+          <a class="naver-badge" href="https://map.naver.com/v5/search/테라로사 양재역" target="_blank" rel="noopener">네이버지도</a>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item"><span class="info-label">위치</span><span class="info-value">강남대로 206, 엔스빌딩 1층 (3번 출구 도보 3분)</span></div>
+        <div class="info-item"><span class="info-label">영업시간</span><span class="info-value">평일 08:00~22:00 / 주말 09:00~22:00</span></div>
+      </div>
+      <div class="tag-list">
+        <span class="tag">스페셜티 커피</span>
+        <span class="tag">모던하고 넓은 공간</span>
+      </div>
+      <div class="reason">회식 후 조용하고 세련된 분위기에서 마무리 대화를 나누기 좋은 커피 전문점.</div>
+    </div>
+  </section>
+
+  <!-- 6. 선택 가이드 -->
+  <section id="guideSection">
+    <h2 class="section-title">회식 장소 선택 가이드</h2>
+    <table class="guide-table">
+      <thead>
+        <tr><th>상황</th><th>추천 장소</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="situation">🔒 프라이빗 룸 필요</span></td>
+          <td>양인환대, 명정루, 왕삼돈</td>
+        </tr>
+        <tr>
+          <td><span class="situation">👥 대인원 단체 (15명+)</span></td>
+          <td>장수촌풍천장어, 국고집</td>
+        </tr>
+        <tr>
+          <td><span class="situation">💰 가성비 우선</span></td>
+          <td>오향절면, 국고집, 잰부닥</td>
+        </tr>
+        <tr>
+          <td><span class="situation">🎩 분위기·격식 중시</span></td>
+          <td>마장동 정육식당, 탐라도야지, 장수촌풍천장어</td>
+        </tr>
+        <tr>
+          <td><span class="situation">🌟 이색 메뉴</span></td>
+          <td>양인환대(양고기), 느린마을 양조장(전통주), 잰부닥(통삼겹살)</td>
+        </tr>
+        <tr>
+          <td><span class="situation">🚗 주차 필요</span></td>
+          <td>명정루, 국고집</td>
+        </tr>
+        <tr>
+          <td><span class="situation">🤝 소규모 (5명 이하)</span></td>
+          <td>오향절면, 육즙관리소, 마장동 정육식당</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 7. 위치 안내 -->
+  <section id="locationSection">
+    <h2 class="section-title">위치 안내</h2>
+    <div class="location-cards">
+      <div class="location-card">
+        <h4>📍 양재역 1번 출구</h4>
+        <p>왕삼돈, 육즙관리소 등 고기집 밀집</p>
+      </div>
+      <div class="location-card">
+        <h4>📍 양재역 5번 출구</h4>
+        <p>AT센터 방향 — 느린마을 양조장, 배나무골 오리집</p>
+      </div>
+      <div class="location-card">
+        <h4>📍 양재역 3번 출구</h4>
+        <p>테라로사, 강남대로 상권</p>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <strong>💡 Tip:</strong> 저녁 피크타임(18:00~20:00)은 예약 없이 방문 시 대기 가능성이 높습니다.
+      룸이 있는 식당은 최소 <strong>1~2일 전 사전 예약</strong>을 강력 권장합니다.
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  양재역 회식 장소 추천 보고서 · 2026년 6월 14일 · 식당명 클릭 시 네이버 지도로 연결됩니다
+</footer>
+
+</body>
+</html>
