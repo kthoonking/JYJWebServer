@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slot Game V3</title>
+<style>
+body{margin:0;background:#0b0b0b;color:#fff;font-family:Arial}
+#app{max-width:1200px;margin:auto;padding:10px}
+.top{display:flex;gap:10px;justify-content:space-between;background:#151515;padding:12px;border:2px solid gold;border-radius:12px}
+.card{padding:4px 10px}
+#slot{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px;background:#111;padding:12px;border-radius:12px}
+.reel{display:flex;flex-direction:column;gap:8px}
+.sym{height:100px;background:#222;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:52px}
+.controls{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+button{padding:10px 16px;font-weight:bold}
+.win{animation:f .4s infinite}
+@keyframes f{50%{background:gold;color:black}}
+#msg{text-align:center;color:gold;font-size:24px;height:30px;margin-top:8px}
+#stats{margin-top:10px;background:#151515;padding:10px;border-radius:10px}
+canvas{position:fixed;left:0;top:0;pointer-events:none}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<div id="app">
+<div class="top">
+<div class="card">잔액 <span id="bal">10000</span></div>
+<div class="card">베팅 <span id="bet">50</span></div>
+<div class="card">당첨 <span id="win">0</span></div>
+<div class="card">무료스핀 <span id="free">0</span></div>
+<div class="card">잭팟 <span id="jack">5000</span></div>
+</div>
+<div id="msg"></div>
+<div id="slot"></div>
+<div class="controls">
+<button onclick="spin()">SPIN</button>
+<button onclick="autoSpin()">AUTO</button>
+<button onclick="betUp()">BET+</button>
+<button onclick="betDown()">BET-</button>
+<button onclick="toggleSound()">SOUND</button>
+</div>
+<div id="stats"></div>
+</div>
+<script>
+const symbols=["🍒","🍋","🍊","🔔","7️⃣","💎","⭐","🎰"];
+const slot=document.getElementById("slot");
+let balance=10000,bet=50,free=0,jackpot=5000,auto=false,sound=true;
+let stats={spins:0,wins:0,biggest:0};
+
+for(let i=0;i<5;i++){
+ let r=document.createElement("div");r.className="reel";
+ for(let j=0;j<3;j++){let s=document.createElement("div");s.className="sym";s.textContent="❔";r.appendChild(s);}
+ slot.appendChild(r);
+}
+
+function rnd(){return symbols[Math.floor(Math.random()*symbols.length)]}
+function update(){
+ bal.textContent=balance; betEl.textContent=bet;
+ win.textContent=lastWin; freeEl.textContent=free; jack.textContent=jackpot;
+ statsDiv.innerHTML=`총스핀:${stats.spins} | 총승리:${stats.wins} | 최고당첨:${stats.biggest}`;
+ localStorage.slotv3=JSON.stringify({balance,bet,stats,jackpot});
+}
+const bal=document.getElementById("bal"),betEl=document.getElementById("bet"),
+freeEl=document.getElementById("free"),statsDiv=document.getElementById("stats");
+
+if(localStorage.slotv3){
+ try{
+ let d=JSON.parse(localStorage.slotv3);
+ balance=d.balance;bet=d.bet;stats=d.stats;jackpot=d.jackpot;
+ }catch(e){}
+}
+
+let lastWin=0;
+
+async function spin(){
+ if(balance<bet&&free===0)return;
+ msg.textContent="";
+ stats.spins++;
+ if(free>0)free--; else balance-=bet;
+ jackpot+=Math.floor(bet*0.1);
+
+ let res=[];
+ let reels=[...document.querySelectorAll('.reel')];
+
+ for(let i=0;i<5;i++){
+   await new Promise(ok=>{
+      let c=0;
+      let t=setInterval(()=>{
+        [...reels[i].children].forEach(x=>x.textContent=rnd());
+        if(++c>15+i*2){clearInterval(t);ok();}
+      },40);
+   });
+   let col=[];
+   [...reels[i].children].forEach(x=>{
+      let s=rnd();x.textContent=s;col.push(s);
+   });
+   res.push(col);
+ }
+
+ evaluate(res);
+}
+
+function evaluate(g){
+ document.querySelectorAll('.sym').forEach(x=>x.classList.remove('win'));
+ let w=0;
+
+ for(let row=0;row<3;row++){
+   let line=[];
+   for(let r=0;r<5;r++)line.push(g[r][row]);
+   if(line.every(v=>v===line[0])){
+      w+=bet*10;
+      document.querySelectorAll('.reel').forEach(re=>re.children[row].classList.add('win'));
+   }
+ }
+
+ let scat=g.flat().filter(v=>v==="🎰").length;
+ if(scat>=3){free+=10;msg.textContent="FREE SPIN +10";}
+
+ if(Math.random()<0.01){
+   w+=jackpot;
+   msg.textContent="JACKPOT!";
+   jackpot=5000;
+   burst(300);
+ }
+
+ if(w>0){
+   stats.wins++;
+   stats.biggest=Math.max(stats.biggest,w);
+   burst(120);
+ }
+
+ balance+=w;
+ lastWin=w;
+ update();
+
+ if(auto)setTimeout(spin,800);
+}
+
+function autoSpin(){auto=!auto;if(auto)spin();}
+function betUp(){bet+=10;update();}
+function betDown(){bet=Math.max(10,bet-10);update();}
+
+function toggleSound(){
+ sound=!sound;
+ if(sound)beep(500); 
+}
+
+const ac=new (window.AudioContext||window.webkitAudioContext)();
+function beep(freq){
+ if(!sound)return;
+ let o=ac.createOscillator(),g=ac.createGain();
+ o.frequency.value=freq;o.connect(g);g.connect(ac.destination);
+ o.start();g.gain.exponentialRampToValueAtTime(0.0001,ac.currentTime+0.15);
+ o.stop(ac.currentTime+0.15);
+}
+
+const cv=document.getElementById('fx'),ctx=cv.getContext('2d');
+function rs(){cv.width=innerWidth;cv.height=innerHeight} rs(); onresize=rs;
+let p=[];
+function burst(n){
+ for(let i=0;i<n;i++)p.push({x:innerWidth/2,y:innerHeight/2,vx:(Math.random()-.5)*12,vy:(Math.random()-.5)*12,l:100});
+ beep(800);
+}
+(function loop(){
+ ctx.clearRect(0,0,cv.width,cv.height);
+ p.forEach(a=>{a.x+=a.vx;a.y+=a.vy;a.vy+=.08;a.l--;ctx.fillText("🪙",a.x,a.y)});
+ p=p.filter(a=>a.l>0);
+ requestAnimationFrame(loop);
+})();
+
+update();
+</script>
+</body>
+</html>
