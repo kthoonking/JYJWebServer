@@ -97,12 +97,17 @@
   /* ── Overlay ── */
   #overlay {
     position: fixed;
-    inset: 0;
+    top: 0; left: 0; right: 0; bottom: 0;
     background: rgba(253,245,236,0.88);
+    -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
+    display: -webkit-flex;
     display: flex;
+    -webkit-flex-direction: column;
     flex-direction: column;
+    -webkit-align-items: center;
     align-items: center;
+    -webkit-justify-content: center;
     justify-content: center;
     gap: 14px;
   }
@@ -134,6 +139,8 @@
     letter-spacing: 2px;
     box-shadow: 0 4px 18px rgba(255,154,193,0.45);
     transition: transform .15s, box-shadow .15s;
+    -webkit-appearance: none;
+    appearance: none;
   }
 
   #overlay button:hover {
@@ -197,6 +204,7 @@
   }
 
   .ctrl-btn {
+    -webkit-flex: 1;
     flex: 1;
     height: 58px;
     background: var(--panel);
@@ -208,8 +216,11 @@
     box-shadow: 0 3px 10px rgba(180,160,220,0.15);
     transition: transform .08s, background .08s;
     -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
     user-select: none;
     touch-action: manipulation;
+    -webkit-appearance: none;
+    appearance: none;
   }
 
   .ctrl-btn:active {
@@ -220,14 +231,22 @@
   /* ── Mobile breakpoint ── */
   @media (max-width: 520px) {
     body {
-      height: auto;
-      min-height: 100svh;
-      padding: 14px 0 24px;
+      -webkit-flex-direction: column;
+      flex-direction: column;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: flex-start;
       justify-content: flex-start;
+      height: auto;
+      min-height: 100vh;
+      padding: 14px 0 24px;
+      overflow-x: hidden;
     }
 
     #app {
+      -webkit-flex-direction: column;
       flex-direction: column;
+      -webkit-align-items: center;
       align-items: center;
       gap: 10px;
     }
@@ -235,12 +254,14 @@
     #side { display: none; }
 
     #mobile-stats {
+      display: -webkit-flex;
       display: flex;
       gap: 8px;
       width: 300px;
     }
 
     #mobile-controls {
+      display: -webkit-flex;
       display: flex;
       gap: 8px;
       width: 300px;
