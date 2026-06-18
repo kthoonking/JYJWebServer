@@ -234,6 +234,179 @@
     @media (prefers-reduced-motion: reduce) {
       .coin-prompt { animation: none; opacity: 0.5; }
     }
+
+    /* ─── COMMENT SECTION ─── */
+    .comment-section {
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .comment-section-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 4px;
+      color: var(--cyan);
+      text-align: center;
+      margin-bottom: 24px;
+      text-shadow: 0 0 8px var(--cyan), 0 0 20px rgba(0, 229, 255, 0.3);
+    }
+
+    .comment-form {
+      background: var(--card-bg);
+      border: 1px solid rgba(0, 229, 255, 0.2);
+      border-radius: 2px;
+      padding: 7px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .comment-form .corner {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-color: var(--cyan);
+      border-style: solid;
+      opacity: 0.5;
+    }
+    .comment-form .corner.tl { top: 6px;  left: 6px;  border-width: 1px 0 0 1px; }
+    .comment-form .corner.tr { top: 6px;  right: 6px; border-width: 1px 1px 0 0; }
+    .comment-form .corner.bl { bottom: 6px; left: 6px;  border-width: 0 0 1px 1px; }
+    .comment-form .corner.br { bottom: 6px; right: 6px; border-width: 0 1px 1px 0; }
+
+    .comment-input {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--muted);
+      border-radius: 2px;
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      outline: none;
+      transition: border-color 0.2s;
+      width: 100%;
+    }
+
+    .comment-input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 8px rgba(0, 229, 255, 0.15);
+    }
+
+    .comment-input::placeholder {
+      color: var(--muted);
+    }
+
+    #inputName {
+      width: 110px;
+      flex-shrink: 0;
+    }
+
+    textarea.comment-input {
+      flex: 1;
+      resize: none;
+      min-height: 20px;
+      height: 20px;
+    }
+
+    .comment-submit {
+      flex-shrink: 0;
+      background: transparent;
+      border: 1px solid var(--pink);
+      color: var(--pink);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.45rem;
+      letter-spacing: 2px;
+      padding: 3px 12px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background 0.2s, box-shadow 0.2s;
+      align-self: stretch;
+    }
+
+    .comment-submit:hover {
+      background: rgba(255, 45, 120, 0.1);
+      box-shadow: 0 0 12px rgba(255, 45, 120, 0.3);
+    }
+
+    .comment-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .comment-item {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 45, 120, 0.15);
+      border-radius: 2px;
+      padding: 16px;
+      position: relative;
+    }
+
+    .comment-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, var(--pink), transparent);
+    }
+
+    .comment-meta {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .comment-author {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.4rem;
+      color: var(--cyan);
+      letter-spacing: 2px;
+    }
+
+    .comment-date {
+      font-size: 0.35rem;
+      color: #9d8fc0;
+    }
+
+    .comment-body {
+      font-size: 0.45rem;
+      line-height: 1.6;
+      color: #f0eaff;
+    }
+
+    .comment-empty {
+      text-align: center;
+      color: #9d8fc0;
+      font-size: 0.65rem;
+      padding: 20px 0;
+    }
+
+    .comment-delete {
+      margin-left: auto;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 0.7rem;
+      cursor: pointer;
+      padding: 0 2px;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+
+    .comment-delete:hover {
+      color: var(--pink);
+    }
   </style>
 </head>
 <body>
@@ -277,6 +450,147 @@
 
     <p class="coin-prompt">— Select Your Game —</p>
 
+    <section class="comment-section">
+      <h2 class="comment-section-title">// PLAYER REVIEWS</h2>
+
+      <form class="comment-form" id="commentForm">
+        <span class="corner tl"></span>
+        <span class="corner tr"></span>
+        <span class="corner bl"></span>
+        <span class="corner br"></span>
+        <div class="form-row">
+          <input
+            type="text"
+            class="comment-input"
+            id="inputName"
+            placeholder="닉네임"
+            maxlength="20"
+            required
+          />
+          <textarea
+            class="comment-input"
+            id="inputComment"
+            placeholder="게임 한 줄 소감을 남겨주세요!"
+            maxlength="300"
+            required
+          ></textarea>
+          <button type="submit" class="comment-submit">SUBMIT</button>
+        </div>
+      </form>
+
+      <div class="comment-list" id="commentList"></div>
+    </section>
+
   </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+  <script>
+    firebase.initializeApp({
+      apiKey: "AIzaSyC9ir3pfsbjb-dJXEeEnFHz9JKwN8LSf5s",
+      authDomain: "jyj-game-space.firebaseapp.com",
+      projectId: "jyj-game-space",
+      storageBucket: "jyj-game-space.firebasestorage.app",
+      messagingSenderId: "367337877281",
+      appId: "1:367337877281:web:0578b0b019b071846bd860"
+    });
+
+    const db = firebase.firestore();
+    const commentsCol = db.collection('comments');
+
+    function formatDate(timestamp) {
+      if (!timestamp) return '';
+      const d = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+      return d.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' })
+        + ' ' + d.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function renderComments(comments) {
+      const list = document.getElementById('commentList');
+
+      if (comments.length === 0) {
+        list.innerHTML = '<p class="comment-empty">아직 리뷰가 없어요. 첫 번째 리뷰를 남겨보세요!</p>';
+        return;
+      }
+
+      list.innerHTML = comments.map(c => `
+        <div class="comment-item">
+          <div class="comment-meta">
+            <span class="comment-author">${escapeHtml(c.name)}</span>
+            <span class="comment-date">${formatDate(c.date)}</span>
+            <button class="comment-delete" data-id="${c.id}" title="삭제">✕</button>
+          </div>
+          <p class="comment-body">${escapeHtml(c.text)}</p>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('commentList').addEventListener('click', async function(e) {
+      const btn = e.target.closest('.comment-delete');
+      if (!btn) return;
+      await commentsCol.doc(btn.dataset.id).delete();
+    });
+
+    document.getElementById('commentForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('inputName').value.trim();
+      const text = document.getElementById('inputComment').value.trim();
+      if (!name || !text) return;
+
+      const btn = this.querySelector('.comment-submit');
+      btn.textContent = '...';
+      btn.disabled = true;
+
+      try {
+        await commentsCol.add({
+          name,
+          text,
+          date: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        this.reset();
+      } catch (error) {
+        alert('저장 실패: ' + error.message);
+        console.error(error);
+      } finally {
+        btn.textContent = 'SUBMIT';
+        btn.disabled = false;
+      }
+    });
+
+    const commentList = document.getElementById('commentList');
+    commentList.innerHTML = '<p class="comment-empty">댓글을 불러오는 중...</p>';
+
+    const timeoutId = setTimeout(() => {
+      commentList.innerHTML =
+        '<p class="comment-empty">⚠ 연결 시간 초과 — 아래를 확인해주세요:<br><br>' +
+        '1. Firebase 콘솔 → Firestore Database가 생성되어 있는지<br>' +
+        '2. 파일을 file://로 열지 말고 VS Code Live Server로 열기</p>';
+    }, 8000);
+
+    commentsCol.orderBy('date', 'desc').get()
+      .then(snapshot => {
+        clearTimeout(timeoutId);
+        const comments = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderComments(comments);
+
+        commentsCol.orderBy('date', 'desc').onSnapshot(
+          snapshot => {
+            const updated = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            renderComments(updated);
+          },
+          error => console.error('실시간 연결 오류:', error)
+        );
+      })
+      .catch(error => {
+        clearTimeout(timeoutId);
+        console.error('Firestore 오류:', error);
+        commentList.innerHTML =
+          `<p class="comment-empty">오류 (${error.code}): ${error.message}</p>`;
+      });
+  </script>
 </body>
 </html>
