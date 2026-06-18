@@ -315,8 +315,7 @@
     textarea.comment-input {
       flex: 1;
       resize: none;
-      min-height: 20px;
-      height: 20px;
+      overflow: hidden;
     }
 
     .comment-submit {
@@ -358,7 +357,7 @@
 
     .comment-author {
       font-family: 'Press Start 2P', monospace;
-      font-size: 0.4rem;
+      font-size: 0.6rem;
       color: var(--cyan);
       letter-spacing: 2px;
       white-space: nowrap;
@@ -366,7 +365,7 @@
     }
 
     .comment-body {
-      font-size: 0.45rem;
+      font-size: 0.675rem;
       line-height: 1.6;
       color: #f0eaff;
       flex: 1;
@@ -374,7 +373,7 @@
     }
 
     .comment-date {
-      font-size: 0.35rem;
+      font-size: 0.525rem;
       color: #9d8fc0;
       white-space: nowrap;
       flex-shrink: 0;
@@ -505,6 +504,7 @@
             id="inputComment"
             placeholder="게임 한 줄 소감을 남겨주세요!"
             maxlength="300"
+            rows="1"
             required
           ></textarea>
           <button type="submit" class="comment-submit">SUBMIT</button>
