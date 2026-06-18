@@ -342,32 +342,18 @@
     .comment-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 3px;
     }
 
     .comment-item {
       background: var(--card-bg);
       border: 1px solid rgba(255, 45, 120, 0.15);
       border-radius: 2px;
-      padding: 16px;
-      position: relative;
-    }
-
-    .comment-item::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: linear-gradient(180deg, var(--pink), transparent);
-    }
-
-    .comment-meta {
+      padding: 2px 6px;
       display: flex;
       align-items: baseline;
-      gap: 10px;
-      margin-bottom: 6px;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     .comment-author {
@@ -375,17 +361,23 @@
       font-size: 0.4rem;
       color: var(--cyan);
       letter-spacing: 2px;
-    }
-
-    .comment-date {
-      font-size: 0.35rem;
-      color: #9d8fc0;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .comment-body {
       font-size: 0.45rem;
       line-height: 1.6;
       color: #f0eaff;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .comment-date {
+      font-size: 0.35rem;
+      color: #9d8fc0;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .comment-empty {
@@ -393,6 +385,44 @@
       color: #9d8fc0;
       font-size: 0.65rem;
       padding: 20px 0;
+    }
+
+    .comment-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .page-btn {
+      background: transparent;
+      border: 1px solid var(--pink);
+      color: var(--pink);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.4rem;
+      letter-spacing: 2px;
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    .page-btn:hover:not(:disabled) {
+      background: rgba(255, 45, 120, 0.1);
+      box-shadow: 0 0 8px rgba(255, 45, 120, 0.3);
+    }
+
+    .page-btn:disabled {
+      opacity: 0.25;
+      cursor: default;
+      border-color: var(--muted);
+      color: var(--muted);
+    }
+
+    .page-info {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.4rem;
+      color: #9d8fc0;
     }
 
     .comment-delete {
@@ -482,6 +512,7 @@
       </form>
 
       <div class="comment-list" id="commentList"></div>
+      <div class="comment-pagination" id="commentPagination"></div>
     </section>
 
   </div>
@@ -512,24 +543,46 @@
       return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    function renderComments(comments) {
-      const list = document.getElementById('commentList');
+    const PAGE_SIZE = 10;
+    let allComments = [];
+    let currentPage = 1;
 
-      if (comments.length === 0) {
+    function renderComments(comments) {
+      allComments = comments;
+      currentPage = 1;
+      drawPage();
+    }
+
+    function drawPage() {
+      const list = document.getElementById('commentList');
+      const pagination = document.getElementById('commentPagination');
+      const totalPages = Math.max(1, Math.ceil(allComments.length / PAGE_SIZE));
+      currentPage = Math.min(currentPage, totalPages);
+
+      if (allComments.length === 0) {
         list.innerHTML = '<p class="comment-empty">아직 리뷰가 없어요. 첫 번째 리뷰를 남겨보세요!</p>';
+        pagination.innerHTML = '';
         return;
       }
 
-      list.innerHTML = comments.map(c => `
+      const slice = allComments.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+      list.innerHTML = slice.map(c => `
         <div class="comment-item">
-          <div class="comment-meta">
-            <span class="comment-author">${escapeHtml(c.name)}</span>
-            <span class="comment-date">${formatDate(c.date)}</span>
-            <button class="comment-delete" data-id="${c.id}" title="삭제">✕</button>
-          </div>
-          <p class="comment-body">${escapeHtml(c.text)}</p>
+          <span class="comment-author">${escapeHtml(c.name)}</span>
+          <span class="comment-body">${escapeHtml(c.text)}</span>
+          <span class="comment-date">${formatDate(c.date)}</span>
+          <button class="comment-delete" data-id="${c.id}" title="삭제">✕</button>
         </div>
       `).join('');
+
+      pagination.innerHTML = totalPages <= 1 ? '' : `
+        <button class="page-btn" id="btnPrev" ${currentPage === 1 ? 'disabled' : ''}>◀ PREV</button>
+        <span class="page-info">${currentPage} / ${totalPages}</span>
+        <button class="page-btn" id="btnNext" ${currentPage === totalPages ? 'disabled' : ''}>NEXT ▶</button>
+      `;
+
+      document.getElementById('btnPrev')?.addEventListener('click', () => { currentPage--; drawPage(); });
+      document.getElementById('btnNext')?.addEventListener('click', () => { currentPage++; drawPage(); });
     }
 
     document.getElementById('commentList').addEventListener('click', async function(e) {
